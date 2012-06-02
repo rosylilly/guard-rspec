@@ -5,6 +5,7 @@ module Guard
   class RSpec < Guard
     autoload :Runner,    'guard/rspec/runner'
     autoload :Inspector, 'guard/rspec/inspector'
+    autoload :Parser,    'guard/rspec/parser'
 
     def initialize(watchers = [], options = {})
       super

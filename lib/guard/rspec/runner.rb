@@ -20,6 +20,8 @@ module Guard
       def run(paths, options = {})
         return false if paths.empty?
 
+        return false unless check_syntax(paths)
+
         message = options[:message] || "Running: #{paths.join(' ')}"
         UI.info(message, :reset => true)
 
@@ -212,6 +214,22 @@ module Guard
 
       def formatter_regex
         @formatter_regex ||= /(?:^|\s)(?:-f\s*|--format(?:=|\s+))([\w:]+)/
+      end
+      
+      def check_syntax(paths)
+        get_spec_files(paths).inject(true) do | ret, path |
+          ret && Parser.syntax_check(path)
+        end
+      end
+
+      def get_spec_files(paths)
+        paths.map do | path |
+          if FileTest.directory?(path)
+            Dir.glob("#{Dir.pwd}/#{path}/**/*_spec.rb")
+          else
+            "#{Dir.pwd}/#{path}"
+          end
+        end.flatten
       end
 
     end
